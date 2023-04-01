@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"ticket-booker/helper"
 	"time"
 )
@@ -21,6 +22,8 @@ type UserData struct {
 	numberOfTickets uint
 }
 
+var wg = sync.WaitGroup{}
+
 func main() {
 	greetUsers()
 
@@ -34,6 +37,8 @@ func main() {
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 			bookTicket( userTickets, firstName, lastName, email)
+			// go routine for concurrency
+			wg.Add(1) // signifying the number of threads that the main thread should wait for
 			go sendTicket( userTickets, firstName, lastName, email)
 			firstNames := getFirstNames()
 			fmt.Printf("These are all our bookings: %v\n", firstNames)
@@ -53,6 +58,7 @@ func main() {
 				fmt.Println("Number of tickets you entered is invalid")
 			}
 		}
+		wg.Wait()
 	}
 }
 
@@ -119,4 +125,5 @@ func sendTicket(userTickets uint16, firstName string, lastName string, email str
 	fmt.Println("=========================================")
 	fmt.Printf("Sending ticket \n%v to email address %v\n", ticket, email )
 	fmt.Println("=========================================")
+	wg.Done() // removes the thread
 }
