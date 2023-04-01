@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"strconv"
 	"ticket-booker/helper"
 )
 
@@ -11,7 +11,7 @@ const conferenceTickets uint   = 50
 var appName = "TJ Go Conference"
 var remainingTickets uint = 50
 // bookings array/slice
-var bookings = []string{}
+var bookings = make([]map[string]string, 0)  
 
 func main() {
 	greetUsers()
@@ -58,9 +58,7 @@ func getFirstNames() []string {
 	// using array for-each to extract the first names in each array element
 			firstNames := []string{}
 			for _, booking := range(bookings) {
-				splittedName := strings.Fields(booking)
-				firstName := splittedName[0]
-				firstNames = append(firstNames, firstName)
+				firstNames = append(firstNames, booking["firstName"])
 			}
 			return firstNames			
 }
@@ -89,7 +87,16 @@ func getUserInput() (string, string, string, uint16) {
 
 func bookTicket( userTickets uint16,  firstName string, lastName string, email string) {
 			remainingTickets = remainingTickets - uint(userTickets)
-			bookings = append(bookings, firstName + " " + lastName)
+
+			// create a map for user
+			var userData = make(map[string]string)
+			userData["firstName"] = firstName
+			userData["lastName"] = lastName
+			userData["email"] = email
+			userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+
+			bookings = append(bookings, userData)
+			fmt.Printf("List of booking: %v", bookings)
 	
 			fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v.\n", firstName, lastName, userTickets, email)
 		
