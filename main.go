@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"ticket-booker/helper"
 )
 
@@ -11,7 +10,15 @@ const conferenceTickets uint   = 50
 var appName = "TJ Go Conference"
 var remainingTickets uint = 50
 // bookings array/slice
-var bookings = make([]map[string]string, 0)  
+var bookings = make([]UserData, 0)  
+
+// STRUCTS
+type UserData struct {
+	firstName string
+	lastName string
+	email string
+	numberOfTickets uint
+}
 
 func main() {
 	greetUsers()
@@ -58,7 +65,7 @@ func getFirstNames() []string {
 	// using array for-each to extract the first names in each array element
 			firstNames := []string{}
 			for _, booking := range(bookings) {
-				firstNames = append(firstNames, booking["firstName"])
+				firstNames = append(firstNames, booking.firstName)
 			}
 			return firstNames			
 }
@@ -89,14 +96,15 @@ func bookTicket( userTickets uint16,  firstName string, lastName string, email s
 			remainingTickets = remainingTickets - uint(userTickets)
 
 			// create a map for user
-			var userData = make(map[string]string)
-			userData["firstName"] = firstName
-			userData["lastName"] = lastName
-			userData["email"] = email
-			userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+			var userData = UserData {
+				firstName: firstName,
+				lastName: lastName,
+				email: email,
+				numberOfTickets: uint(userTickets),
+			}
 
 			bookings = append(bookings, userData)
-			fmt.Printf("List of booking: %v", bookings)
+			fmt.Printf("List of booking: %v\n", bookings)
 	
 			fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v.\n", firstName, lastName, userTickets, email)
 		
