@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"ticket-booker/helper"
+	"time"
 )
 
 // Using package level variables, you cannot use the := syntactical sugar. You've gotta use var or const
@@ -33,6 +34,7 @@ func main() {
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 			bookTicket( userTickets, firstName, lastName, email)
+			go sendTicket( userTickets, firstName, lastName, email)
 			firstNames := getFirstNames()
 			fmt.Printf("These are all our bookings: %v\n", firstNames)
 			if remainingTickets < 1 {
@@ -109,4 +111,12 @@ func bookTicket( userTickets uint16,  firstName string, lastName string, email s
 			fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v.\n", firstName, lastName, userTickets, email)
 		
 			fmt.Printf("%v tickets remaining for %v\n", remainingTickets, appName)
+}
+
+func sendTicket(userTickets uint16, firstName string, lastName string, email string) {
+	time.Sleep(10 * time.Second)
+	var ticket = fmt.Sprintf("%v tickets for %v %v", userTickets, firstName, lastName)
+	fmt.Println("=========================================")
+	fmt.Printf("Sending ticket \n%v to email address %v\n", ticket, email )
+	fmt.Println("=========================================")
 }
